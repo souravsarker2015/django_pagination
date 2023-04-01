@@ -1,0 +1,169 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Title</title>#}
+{#    <style>#}
+{#        /* CSS */#}
+{#        .pagination {#}
+{#            margin-top: 20px;#}
+{#            text-align: center;#}
+{#        }#}
+{##}
+{#        .step-links {#}
+{#            display: inline-block;#}
+{#            margin: 0 20px;#}
+{#        }#}
+{##}
+{#        .step-links a {#}
+{#            color: #000;#}
+{#            text-decoration: none;#}
+{#            border: 1px solid #ccc;#}
+{#            padding: 5px 10px;#}
+{#        }#}
+{##}
+{#        .current-page {#}
+{#            display: inline-block;#}
+{#            font-weight: bold;#}
+{#            margin: 0 10px;#}
+{#        }#}
+{##}
+{#    </style>#}
+{#</head>#}
+{#<body>#}
+{#<!-- post_list.html -->#}
+{#<div class="post-list">#}
+{#    {% for post in page %}#}
+{#        <div class="post">#}
+{#            <h2>{{ post.title }}</h2>#}
+{#            <p>{{ post.content }}</p>#}
+{#        </div>#}
+{#    {% endfor %}#}
+{#</div>#}
+{##}
+{#{% if page.has_other_pages %}#}
+{#    <div class="pagination">#}
+{#        <span class="step-links">#}
+{#            {% if page.has_previous %}#}
+{#                <a href="?page=1">&laquo; first</a>#}
+{#                <a href="?page={{ page.previous_page_number }}">previous</a>#}
+{#            {% endif %}#}
+{##}
+{#            {% for page_num in page.paginator.page_range %}#}
+{#                {% if page_num == page.number %}#}
+{#                    <span class="current-page">{{ page_num }}</span>#}
+{#                {% else %}#}
+{#                    <a href="?page={{ page_num }}">{{ page_num }}</a>#}
+{#                {% endif %}#}
+{#            {% endfor %}#}
+{##}
+{#            {% if page.has_next %}#}
+{#                <a href="?page={{ page.next_page_number }}">next</a>#}
+{#                <a href="?page={{ page.paginator.num_pages }}">last &raquo;</a>#}
+{#            {% endif %}#}
+{#        </span>#}
+{#    </div>#}
+{#{% endif %}#}
+{##}
+{##}
+{#</body>#}
+{#</html>#}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies</title>
+    <!--Bootstrap CSS-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+
+
+<div class="container p-4">
+    <div class="row">
+        {% for m in page %}
+            <div class="col-lg-4 col-md-6 col-sm-12 pb-4">
+                <div class="card h-100 p-4">
+                    {#            <img src="{{ m.movie_poster.url }}" class="card-img-top" alt="{{ m.movie_title}}" style="width: auto; height: 350px; object-fit: contain;">#}
+                    <br>
+                    <h4>{{ m.title }}</h4>
+                    {#            <p class="text-muted">{{m.release_year}} | {{m.director}}</p>#}
+                    <p>{{ m.description }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!--Pagination-->
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        {% if page.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1">&laquo; first</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page.previous_page_number }}">Previous</a>
+            </li>
+
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Previous</a>
+            </li>
+        {% endif %}
+
+        {% if page.number|add:'-4' > 1 %}
+            <li class="page-item"><a class="page-link" href="?page={{ page.number|add:'-5' }}">&hellip;</a></li>
+        {% endif %}
+
+        {% for i in page.paginator.page_range %}
+            {% if page.number == i %}
+                <li class="page-item active" aria-current="page">
+              <span class="page-link">
+                {{ i }}
+                <span class="sr-only">(current)</span>
+              </span>
+                </li>
+            {% elif i > page.number|add:'-5' and i < page.number|add:'5' %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page.paginator.num_pages > page.number|add:'4' %}
+            <li class="page-item"><a class="page-link" href="?page={{ page.number|add:'5' }}">&hellip;</a></li>
+        {% endif %}
+
+        {% if page.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+                {#                <a class="page-link" href="?page={{ page.paginator.num_pages }}">&laquo; first</a>#}
+                <a class="page-link" href="?page={{ page.paginator.num_pages }}">last &raquo;</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Next</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+<!--end of Pagination-->
+
+
+<!-- Optional Javascript -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+</body>
+</html>
